@@ -57,7 +57,7 @@
     "clean": "rimraf dist && rimraf dist-site",
     "eslint": "eslint-runner",
     "eslint-fix": "eslint-runner --fix",
-    "prepublishOnly": "pnpm build",
+    "prepack": "pnpm build",
     "type-check": "tsc --noEmit",
     "unit-test": "vitest --run",
     "unit-test-watch": "vitest"

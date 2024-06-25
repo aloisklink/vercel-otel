@@ -64,8 +64,15 @@ export abstract class OTLPExporterEdgeBase<
       next: { internal: true },
     })
       .then((res) => {
-        diag.debug("@vercel/otel/otlp: onSuccess", res.status, res.statusText);
-        onSuccess();
+        if (res.ok) {
+          diag.debug("@vercel/otel/otlp: onSuccess", res.status, res.statusText);
+          onSuccess();
+        } else {
+          void res.text().catch(() => res.statusText).then((text) => {
+            diag.error("@vercel/otel/otlp: onError", res.status, text);
+            onError(new Error(`"@vercel/otel/otlp: onError", ${res.status}, ${text}`) as OTLPExporterError);
+          });
+        }
         // Drain the response body.
         void res.arrayBuffer().catch(() => undefined);
       })
